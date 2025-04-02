@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import upload_file from "@/upload_functions";
+import Submit_form from "./Submit_form";
 const Upload_input = () => {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -10,38 +12,23 @@ const Upload_input = () => {
     setSelectedFile(file);
     console.log("Selected file:", file);
   };
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrag = (e: React.DragEvent) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  async function onSubmitHandler(e: React.FormEvent) {
     e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
+    if (selectedFile) {
+      upload_file(selectedFile, 1)
+        .then((response) => {
+          console.log("File uploaded successfully:", response);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+        });
+    } else {
+      console.error("No file selected for upload.");
     }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onFileSelect(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      onFileSelect(e.target.files[0]);
-    }
-  };
-
-  const onButtonClick = () => {
-    inputRef.current?.click();
-  };
+  }
 
   return (
     <div>
@@ -58,30 +45,16 @@ const Upload_input = () => {
           </div>
         </div>
       ) : (
-        <div
-          className={`w-full p-4 border-2 border-dashed rounded-lg text-center cursor-pointer
-        ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"} ${
-            onHover ? "bg-blue-50/40" : "bg-white/20"
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          onClick={onButtonClick}
-          onMouseEnter={() => setOnHover(true)}
-          onMouseLeave={() => setOnHover(false)}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            className="hidden"
-            onChange={handleChange}
-            accept=".mp3, .wav"
+        <form onSubmit={onSubmitHandler}>
+          <Submit_form
+            dragActive={dragActive}
+            setDragActive={setDragActive}
+            onFileSelect={onFileSelect}
+            inputRef={inputRef}
+            setOnHover={setOnHover}
+            onHover={onHover}
           />
-          <p className="text-white">
-            Drag and drop your song here or click to select
-          </p>
-        </div>
+        </form>
       )}
     </div>
   );
