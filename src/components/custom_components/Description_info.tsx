@@ -7,8 +7,10 @@ type Props = {
 
 const Description_info = ({ title, description }: Props) => {
   return (
-    <div>
-      <h2 className="text-white text-[3rem] text-center font-bold">{title}</h2>
+    <div className="flex flex-col gap-2">
+      <h2 className="text-white leading-14 text-[3rem] text-center font-bold">
+        {title}
+      </h2>
       <p className="text-white/80 text-center text-[1.5rem] font-light">
         {description}
       </p>

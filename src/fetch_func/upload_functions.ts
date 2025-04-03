@@ -18,6 +18,7 @@ async function upload_file(file: File, mode: 2 | 4) {
     }
 
     const data = await response.json();
+    console.log("Response from server:", data);
     return data;
   } catch (error) {
     console.error("Error in upload_file:", error);

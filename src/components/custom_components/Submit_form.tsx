@@ -11,10 +11,8 @@ type Props = {
 
 const Submit_form = ({
   onFileSelect,
-  dragActive,
   setDragActive,
   setOnHover,
-  onHover,
   inputRef,
 }: Props) => {
   const handleDrag = (e: React.DragEvent) => {
@@ -49,10 +47,6 @@ const Submit_form = ({
   };
   return (
     <div
-      className={`w-full p-4 border-2 border-dashed rounded-lg text-center cursor-pointer
-  ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"} ${
-        onHover ? "bg-blue-50/40" : "bg-white/20"
-      }`}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
       onDragOver={handleDrag}

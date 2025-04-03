@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     });
 
     const data = await res.json();
-
+    console.log("Response from server:", data);
     return new NextResponse(JSON.stringify(data), {
       status: res.status,
       headers: {

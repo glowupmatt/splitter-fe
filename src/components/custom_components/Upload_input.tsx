@@ -1,18 +1,22 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import upload_file from "@/upload_functions";
+import React, { useState, useRef, Dispatch, SetStateAction } from "react";
+import upload_file from "@/fetch_func/upload_functions";
 import Submit_form from "./Submit_form";
 import Spinner_component from "./Spinner_component";
 import { Button } from "../ui/button";
 import { SplitAudioResponse } from "@/types/split_audio_types";
 
-const Upload_input = () => {
+type UploadInputProps = {
+  setResponse: Dispatch<SetStateAction<SplitAudioResponse>>;
+};
+
+const Upload_input = ({ setResponse }: UploadInputProps) => {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [onHover, setOnHover] = useState<boolean>(false);
-  const [response, setResponse] = useState<SplitAudioResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [buttonHovered, setButtonHovered] = useState<boolean>(false);
 
   const onFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -27,7 +31,6 @@ const Upload_input = () => {
       if (selectedFile) {
         const data = await upload_file(selectedFile, 2);
         setResponse(data);
-        console.log("Response from server:", data);
       }
     } catch (error) {
       console.error("Error clearing input value:", error);
@@ -40,14 +43,16 @@ const Upload_input = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+    <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+      <div
+        className={`text-center cursor-pointer p-6
+          ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"} ${
+          onHover ? "bg-blue-50/40" : "bg-white/20"
+        }`}
+      >
         {selectedFile ? (
           <div>
             <div
-              className={`w-full p-4 border-2 border-dashed rounded-lg text-center cursor-pointer ${
-                onHover ? "bg-blue-50/40" : "bg-white/20"
-              }`}
               onMouseEnter={() => setOnHover(true)}
               onMouseLeave={() => setOnHover(false)}
             >
@@ -73,9 +78,17 @@ const Upload_input = () => {
             />
           </>
         )}
-        <Button className="cursor-pointer">Split Track</Button>
-      </form>
-    </div>
+      </div>
+      <Button
+        onMouseEnter={() => setButtonHovered(true)}
+        onMouseLeave={() => setButtonHovered(false)}
+        className={`cursor-pointer transition-colors duration-200 ${
+          buttonHovered ? "bg-blue-500" : "bg-blue-600"
+        }`}
+      >
+        Split Track
+      </Button>
+    </form>
   );
 };
 
