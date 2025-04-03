@@ -1,27 +1,27 @@
-async function upload_file(file: File, mode: number) {
+async function upload_file(file: File, mode: 2 | 4) {
   try {
     if (!file) {
-      return new Response("No file uploaded", { status: 400 });
+      throw new Error("No file uploaded");
     }
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("mode", mode.toString());
 
-    const response = await fetch("/api/upload_file", {
+    const response = await fetch("/api/split_stems", {
       method: "POST",
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error("Failed to upload file");
+      throw new Error(`Upload failed: ${response.statusText}`);
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
     console.error("Error in upload_file:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    throw error;
   }
 }
 
