@@ -5,45 +5,12 @@ import Information_card from "@/components/custom_components/Information_card";
 import information_data from "@/shared_data/information_data";
 import description_data from "@/shared_data/description_data";
 import Upload_input from "@/components/custom_components/Upload_input";
-import Audio_display from "@/components/custom_components/Display_waves/Audio_display";
 import { SplitAudioResponse } from "@/types/split_audio_types";
 import { useState } from "react";
 import { response_test } from "../shared_data/testing_data";
-import WaveSurfer from "wavesurfer.js";
-import {}
 
 export default function Home() {
   const [response, setResponse] = useState<SplitAudioResponse>(response_test);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [wavesurfers, setWavesurfers] = useState<{ [key: string]: any }>({});
-
-  const onReady = (ws: any, key: string) => {
-    setWavesurfers((prev) => ({
-      ...prev,
-      [key]: ws,
-    }));
-  };
-
-  const onSeek = (ws: WaveSurfer, seekTo: number) => {
-    // seekTo is already normalized between 0 and 1
-    Object.values(wavesurfers).forEach((wavesurfer: WaveSurfer) => {
-      if (wavesurfer !== ws) {
-        try {
-          // Ensure seekTo is between 0 and 1
-          const normalizedSeek = Math.max(0, Math.min(1, seekTo));
-          wavesurfer.seekTo(normalizedSeek);
-        } catch (error) {
-          console.error("Error seeking:", error);
-        }
-      }
-    });
-  };
-
-  const onPlayPause = () => {
-    Object.values(wavesurfers).forEach((ws) => {
-      ws.playPause();
-    });
-  };
 
   const audio_links = Object.keys(response_test.downloads).map((key) => {
     return {
@@ -73,21 +40,13 @@ export default function Home() {
           })}
         </div>
         <div className="w-full p-4 border-2 border-dashed rounded-lg">
-          <button onClick={onPlayPause} className="text-white">
-            Play All
-          </button>
+          <button className="text-white">Play All</button>
           {response ? (
             audio_links.map((audio) => {
-              const { key, value } = audio;
+              const { key } = audio;
               return (
                 <div key={key} className="flex flex-col gap-4">
-                  <Audio_display
-                    isPlaying={isPlaying}
-                    setIsPlaying={setIsPlaying}
-                    url={value}
-                    onReady={(ws) => onReady(ws, key)}
-                    onSeek={onSeek}
-                  />
+                  Display
                 </div>
               );
             })
