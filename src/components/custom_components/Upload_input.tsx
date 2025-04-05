@@ -1,17 +1,14 @@
 "use client";
 
-import React, { useState, useRef, Dispatch, SetStateAction } from "react";
+import React, { useState, useRef } from "react";
 import upload_file from "@/fetch_func/upload_functions";
 import Submit_form from "./Submit_form";
 import Spinner_component from "./Spinner_component";
+import { useAudioControls } from "@/context/Audio_controls_context";
 import { Button } from "../ui/button";
-import { SplitAudioResponse } from "@/types/split_audio_types";
 
-type UploadInputProps = {
-  setResponse: Dispatch<SetStateAction<SplitAudioResponse>>;
-};
-
-const Upload_input = ({ setResponse }: UploadInputProps) => {
+const Upload_input = () => {
+  const { setResponse } = useAudioControls();
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [onHover, setOnHover] = useState<boolean>(false);

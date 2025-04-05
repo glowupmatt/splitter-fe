@@ -1,22 +1,38 @@
-import { useContext, useState, createContext, useRef, useEffect } from "react";
+"use client";
+
+import { useContext, useState, createContext, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
+import { response_test } from "../shared_data/testing_data";
 import { SplitAudioResponse } from "@/types/split_audio_types";
 
-type contextType = {
+type AudioControlsContextType = {
   currentTime: number;
   setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
   duration: number;
   setDuration: React.Dispatch<React.SetStateAction<number>>;
   response: SplitAudioResponse | null;
   setResponse: React.Dispatch<React.SetStateAction<SplitAudioResponse | null>>;
-  waveSurferRef: React.RefObject<WaveSurfer[] | null>;
+  waveSurferRef: React.RefObject<WaveSurfer[]>;
+  containerRefs: React.RefObject<(HTMLDivElement | null)[]>;
 };
 
-type Props = {
+type AudioControlsProviderProps = {
   children: React.ReactNode;
 };
 
-export const AudioControlsContext = createContext<contextType | null>(null);
+const defaultContext: AudioControlsContextType = {
+  currentTime: 0,
+  setCurrentTime: () => {},
+  duration: 0,
+  setDuration: () => {},
+  response: response_test,
+  setResponse: () => {},
+  waveSurferRef: { current: [] },
+  containerRefs: { current: [] },
+};
+
+export const AudioControlsContext =
+  createContext<AudioControlsContextType>(defaultContext);
 export const useAudioControls = () => {
   const context = useContext(AudioControlsContext);
   if (!context) {
@@ -27,63 +43,14 @@ export const useAudioControls = () => {
   return context;
 };
 
-const Audio_controls_context = ({ children }: Props) => {
+export const AudioControlsProvider = ({
+  children,
+}: AudioControlsProviderProps) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [response, setResponse] = useState<SplitAudioResponse | null>(null);
   const waveSurferRef = useRef<WaveSurfer[]>([]);
-
-  useEffect(() => {
-    if (response && response.downloads) {
-      const audio_links = Object.keys(response.downloads).map((key) => {
-        return {
-          key: key,
-          value: response.downloads[key as keyof typeof response.downloads],
-        };
-      });
-
-      // Clear previous instances
-      waveSurferRef.current.forEach((ws) => ws.destroy());
-      waveSurferRef.current = [];
-
-      // Create new instances
-      audio_links.forEach((audio) => {
-        waveSurferRef.current.push(
-          WaveSurfer.create({
-            container: `#${audio.key}`,
-            waveColor: "violet",
-            progressColor: "purple",
-            barHeight: 100,
-            barWidth: 2,
-            interact: true,
-            height: 100,
-          })
-        );
-      });
-
-      // Set up event listeners
-      waveSurferRef.current.forEach((waveSurfer, index) => {
-        waveSurfer.load(audio_links[index].value);
-        waveSurfer.on("ready", () => {
-          setDuration(waveSurfer.getDuration());
-        });
-        waveSurfer.on("audioprocess", () => {
-          setCurrentTime(waveSurfer.getCurrentTime());
-        });
-        waveSurfer.on("seeking", (seekTo: number) => {
-          waveSurfer.seekTo(seekTo);
-        });
-      });
-
-      // Cleanup function
-      return () => {
-        waveSurferRef.current.forEach((ws) => {
-          ws.destroy();
-        });
-        waveSurferRef.current = [];
-      };
-    }
-  }, [response]);
+  const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const value = {
     currentTime,
@@ -92,8 +59,8 @@ const Audio_controls_context = ({ children }: Props) => {
     setDuration,
     response,
     setResponse,
-
     waveSurferRef,
+    containerRefs,
   };
 
   return (
@@ -102,5 +69,4 @@ const Audio_controls_context = ({ children }: Props) => {
     </AudioControlsContext.Provider>
   );
 };
-
-export default Audio_controls_context;
+export default AudioControlsProvider;
