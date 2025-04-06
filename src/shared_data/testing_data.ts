@@ -16,13 +16,13 @@ export interface SplitAudioResponse {
 
 export const response_test: SplitAudioResponse = {
   downloads: {
-    bass: "/audio/bass_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+    bass: "https://res.cloudinary.com/dkouwkt7p/video/upload/v1743924151/bass_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics_gbphrj.mp3",
     drums:
-      "/audio/drums_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+      "https://res.cloudinary.com/dkouwkt7p/video/upload/v1743924153/drums_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics_uisa45.mp3",
     other:
-      "/audio/other_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+      "https://res.cloudinary.com/dkouwkt7p/video/upload/v1743924152/other_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics_yftgsf.mp3",
     vocals:
-      "/audio/vocals_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+      "https://res.cloudinary.com/dkouwkt7p/video/upload/v1743924151/vocals_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics_cqp7b9.mp3",
   },
   message: "Separation complete",
   original_file:
