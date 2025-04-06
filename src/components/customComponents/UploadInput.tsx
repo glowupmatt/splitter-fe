@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import upload_file from "@/fetchFunc/upload_functions";
-import Submit_form from "./SubmitForm";
+import uploadFile from "@/fetchFunc/upload_functions";
+import SubmitForm from "./SubmitForm";
 import SpinnerComponent from "./SpinnerComponent";
 import { useAudioControls } from "@/context/AudioControlsContext";
 import { Button } from "../ui/button";
+import { Switch } from "../ui/switch";
 
 const UploadInput = () => {
   const { setResponse } = useAudioControls();
   const [dragActive, setDragActive] = useState<boolean>(false);
+  const [mode, setMode] = useState<2 | 4>(2);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [onHover, setOnHover] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -19,6 +21,12 @@ const UploadInput = () => {
     setSelectedFile(file);
   };
 
+  const handleModeChange = () => {
+    setMode((prevMode) => (prevMode === 2 ? 4 : 2));
+    console.log(`Mode changed to ${mode === 2 ? "4" : "2"} stems`);
+    setResponse(null);
+  };
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   async function onSubmitHandler(e: React.FormEvent) {
@@ -26,7 +34,7 @@ const UploadInput = () => {
     setIsLoading(true);
     try {
       if (selectedFile) {
-        const data = await upload_file(selectedFile, 2);
+        const data = await uploadFile(selectedFile, mode);
         setResponse(data);
       }
     } catch (error) {
@@ -47,34 +55,41 @@ const UploadInput = () => {
           onHover ? "bg-blue-50/40" : "bg-white/20"
         }`}
       >
-        {selectedFile ? (
-          <div>
-            <div
-              onMouseEnter={() => setOnHover(true)}
-              onMouseLeave={() => setOnHover(false)}
-            >
-              {isLoading ? (
-                <div className="w-full flex justify-center items-center flex-col gap-2 text-white">
-                  <SpinnerComponent />
-                  <p>Processing Audio</p>
-                </div>
-              ) : (
-                <p className="text-white">{selectedFile.name}</p>
-              )}
+        <div className="flex justify-between items-center">
+          {selectedFile ? (
+            <div>
+              <div
+                onMouseEnter={() => setOnHover(true)}
+                onMouseLeave={() => setOnHover(false)}
+              >
+                {isLoading ? (
+                  <div className="w-full flex justify-center items-center flex-col gap-2 text-white">
+                    <SpinnerComponent />
+                    <p>Processing Audio</p>
+                  </div>
+                ) : (
+                  <p className="text-white">{selectedFile.name}</p>
+                )}
+              </div>
             </div>
+          ) : (
+            <>
+              <SubmitForm
+                dragActive={dragActive}
+                setDragActive={setDragActive}
+                onFileSelect={onFileSelect}
+                inputRef={inputRef}
+                setOnHover={setOnHover}
+                onHover={onHover}
+              />
+            </>
+          )}
+          <div className="flex text-white items-center gap-2">
+            <p>Get Two Stems</p>
+            <Switch onClick={handleModeChange} />
+            <p>Get All Four Stems</p>
           </div>
-        ) : (
-          <>
-            <Submit_form
-              dragActive={dragActive}
-              setDragActive={setDragActive}
-              onFileSelect={onFileSelect}
-              inputRef={inputRef}
-              setOnHover={setOnHover}
-              onHover={onHover}
-            />
-          </>
-        )}
+        </div>
       </div>
       <Button
         onMouseEnter={() => setButtonHovered(true)}

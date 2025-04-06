@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAudioControls } from "@/context/AudioControlsContext";
 import WaveSurfer from "wavesurfer.js";
+import Controls from "./aduioComponents/Controls";
 
 export const AudioPlayer = () => {
   const { response, containerRefs, setResponse } = useAudioControls();
@@ -128,11 +129,11 @@ export const AudioPlayer = () => {
                 ref={(el) => {
                   containerRefs.current[index] = el;
                 }}
-                className="flex-1 max-w-[54rem] h-[100px] bg-gray-900 rounded-lg"
+                className="flex-1 max-w-[54rem] h-[100px] bg-gray-900 rounded-lg cursor-pointer"
               />
               <button
                 onClick={() => handleMute(key)}
-                className={`px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-md cursor-pointer ${
                   isMuted[key] ? "bg-red-500" : "bg-[#4F4A85]"
                 } text-white min-w-[100px]`}
               >
@@ -140,25 +141,14 @@ export const AudioPlayer = () => {
               </button>
             </div>
           ))}
-          <div className="mt-4 flex flex-col items-start gap-2">
-            <div className="text-white font-medium">
-              Current Time: {Math.floor(currentTime)}s
-            </div>
-            <button
-              onClick={handlePlayPause}
-              className="px-6 py-3 bg-[#4F4A85] text-white rounded-md hover:bg-[#383351] transition-colors"
-            >
-              {isPlaying ? "Pause" : "Play"}
-            </button>
-          </div>
+          <Controls
+            isPlaying={isPlaying}
+            currentTime={currentTime}
+            handlePlayPause={handlePlayPause}
+            removeAudio={removeAudio}
+          />
         </>
       )}
-      <button
-        onClick={removeAudio}
-        className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors cursor-pointer"
-      >
-        Remove Audio
-      </button>
     </div>
   );
 };

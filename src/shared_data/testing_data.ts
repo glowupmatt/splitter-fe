@@ -1,6 +1,9 @@
 interface Downloads {
-  instrumental: string;
-  vocals: string;
+  other?: string;
+  vocals?: string;
+  bass?: string;
+  drums?: string;
+  instrumental?: string;
 }
 
 export interface SplitAudioResponse {
@@ -13,14 +16,17 @@ export interface SplitAudioResponse {
 
 export const response_test: SplitAudioResponse = {
   downloads: {
-    instrumental:
-      "https://rendered-stem-bucket.s3.us-west-2.amazonaws.com/stems/instrumental_Smino_-_Polynesian_Official_Music_Video.mp3",
+    bass: "/audio/bass_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+    drums:
+      "/audio/drums_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+    other:
+      "/audio/other_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
     vocals:
-      "https://rendered-stem-bucket.s3.us-west-2.amazonaws.com/stems/vocals_Smino_-_Polynesian_Official_Music_Video.mp3",
+      "/audio/vocals_NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
   },
   message: "Separation complete",
   original_file:
-    "https://rendered-stem-bucket.s3.us-west-2.amazonaws.com/originals/Smino_-_Polynesian_Official_Music_Video.mp3",
-  processing_time: 149.065119561,
-  separation_time: 146.897797809,
+    "https://rendered-stem-bucket.s3.us-west-2.amazonaws.com/originals/NewJeans_Super_Shy_Lyrics__Super_Shy__Color_Coded_Lyrics.mp3",
+  processing_time: 107.126012873,
+  separation_time: 105.383078983,
 };

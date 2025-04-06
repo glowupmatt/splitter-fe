@@ -1,4 +1,4 @@
-async function upload_file(file: File, mode: 2 | 4) {
+async function uploadFile(file: File, mode: 2 | 4) {
   try {
     if (!file) {
       throw new Error("No file uploaded");
@@ -21,9 +21,9 @@ async function upload_file(file: File, mode: 2 | 4) {
     console.log("Response from server:", data);
     return data;
   } catch (error) {
-    console.error("Error in upload_file:", error);
+    console.error("Error in uploadFile:", error);
     throw error;
   }
 }
 
-export default upload_file;
+export default uploadFile;

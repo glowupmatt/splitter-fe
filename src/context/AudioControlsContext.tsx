@@ -35,7 +35,9 @@ export const useAudioControls = () => {
 export const AudioControlsProvider = ({
   children,
 }: AudioControlsProviderProps) => {
-  const [response, setResponse] = useState<SplitAudioResponse | null>(null);
+  const [response, setResponse] = useState<SplitAudioResponse | null>(
+    response_test
+  );
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const value = {
