@@ -8,6 +8,8 @@ async function uploadFile(file: File, mode: 2 | 4) {
     formData.append("file", file);
     formData.append("mode", mode.toString());
 
+    console.log("Uploading file:", file);
+
     const response = await fetch("/api/split_stems", {
       method: "POST",
       body: formData,
