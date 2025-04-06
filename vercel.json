@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "/src/app/api/split_stems/route.ts": {
-      "maxDuration": 300
-    }
-  }
-}
