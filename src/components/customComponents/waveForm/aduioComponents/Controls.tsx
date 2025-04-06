@@ -23,7 +23,7 @@ const Controls = (props: Props) => {
         </button>
         <button
           onClick={removeAudio}
-          className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-full cursor-pointer"
+          className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-700 transition-colors w-full cursor-pointer"
         >
           Remove Audio
         </button>
