@@ -1,18 +1,12 @@
 "use client";
 
 import { useContext, useState, createContext, useRef } from "react";
-import WaveSurfer from "wavesurfer.js";
 import { response_test } from "../shared_data/testing_data";
 import { SplitAudioResponse } from "@/types/split_audio_types";
 
 type AudioControlsContextType = {
-  currentTime: number;
-  setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
-  duration: number;
-  setDuration: React.Dispatch<React.SetStateAction<number>>;
   response: SplitAudioResponse | null;
   setResponse: React.Dispatch<React.SetStateAction<SplitAudioResponse | null>>;
-  waveSurferRef: React.RefObject<WaveSurfer[]>;
   containerRefs: React.RefObject<(HTMLDivElement | null)[]>;
 };
 
@@ -21,13 +15,8 @@ type AudioControlsProviderProps = {
 };
 
 const defaultContext: AudioControlsContextType = {
-  currentTime: 0,
-  setCurrentTime: () => {},
-  duration: 0,
-  setDuration: () => {},
   response: response_test,
   setResponse: () => {},
-  waveSurferRef: { current: [] },
   containerRefs: { current: [] },
 };
 
@@ -46,20 +35,12 @@ export const useAudioControls = () => {
 export const AudioControlsProvider = ({
   children,
 }: AudioControlsProviderProps) => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [response, setResponse] = useState<SplitAudioResponse | null>(null);
-  const waveSurferRef = useRef<WaveSurfer[]>([]);
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const value = {
-    currentTime,
-    setCurrentTime,
-    duration,
-    setDuration,
     response,
     setResponse,
-    waveSurferRef,
     containerRefs,
   };
 

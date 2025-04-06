@@ -5,7 +5,7 @@ type Props = {
   description: string;
 };
 
-const Description_info = ({ title, description }: Props) => {
+const DescriptionInfo = ({ title, description }: Props) => {
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-white leading-14 text-[3rem] text-center font-bold">
@@ -18,4 +18,4 @@ const Description_info = ({ title, description }: Props) => {
   );
 };
 
-export default Description_info;
+export default DescriptionInfo;

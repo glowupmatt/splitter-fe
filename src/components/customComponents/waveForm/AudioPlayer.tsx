@@ -1,15 +1,22 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useAudioControls } from "@/context/Audio_controls_context";
+import { useAudioControls } from "@/context/AudioControlsContext";
 import WaveSurfer from "wavesurfer.js";
 
 export const AudioPlayer = () => {
-  const { response, containerRefs } = useAudioControls();
+  const { response, containerRefs, setResponse } = useAudioControls();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isMuted, setIsMuted] = useState<{ [key: string]: boolean }>({});
   const wavesurfersRef = useRef<{ [key: string]: WaveSurfer }>({});
+
+  const removeAudio = () => {
+    setResponse(null);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setIsMuted({});
+  };
 
   const handleSeek = (position: number) => {
     const waves = Object.values(wavesurfersRef.current);
@@ -93,21 +100,9 @@ export const AudioPlayer = () => {
       }
     });
 
-    // Store the wavesurfer instances in the ref only
     wavesurfersRef.current = newWavesurfers;
 
-    // Cleanup
     return () => {
-      // Abort all controllers first to cancel any pending requests
-      controllers.forEach((controller) => {
-        try {
-          controller.abort();
-        } catch (e) {
-          console.error("Error aborting controller:", e);
-        }
-      });
-
-      // Then destroy all wavesurfer instances
       Object.values(newWavesurfers).forEach((wave) => {
         if (wave) {
           try {
@@ -158,6 +153,12 @@ export const AudioPlayer = () => {
           </div>
         </>
       )}
+      <button
+        onClick={removeAudio}
+        className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors cursor-pointer"
+      >
+        Remove Audio
+      </button>
     </div>
   );
 };

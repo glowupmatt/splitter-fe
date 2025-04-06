@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import upload_file from "@/fetch_func/upload_functions";
+import upload_file from "@/fetchFunc/upload_functions";
 import Submit_form from "./Submit_form";
 import Spinner_component from "./Spinner_component";
-import { useAudioControls } from "@/context/Audio_controls_context";
+import { useAudioControls } from "@/context/AudioControlsContext";
 import { Button } from "../ui/button";
 
 const Upload_input = () => {
