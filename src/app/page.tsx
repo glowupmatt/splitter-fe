@@ -1,10 +1,10 @@
 "use client";
 
 import DescriptionInfo from "@/components/customComponents/DescriptionInfo";
-import Information_card from "@/components/customComponents/Information_card";
-import information_data from "@/shared_data/information_data";
-import description_data from "@/shared_data/description_data";
-import Upload_input from "@/components/customComponents/Upload_input";
+import Information_card from "@/components/customComponents/InformationCard";
+import information_data from "@/shared_data/informationData";
+import description_data from "@/shared_data/descriptionData";
+import UploadInput from "@/components/customComponents/UploadInput";
 import { useAudioControls } from "@/context/AudioControlsContext";
 import { AudioPlayer } from "@/components/customComponents/waveForm/AudioPlayer";
 
@@ -32,7 +32,7 @@ export default function Home() {
           })}
         </div>
         <div className="w-full p-4 border-2 border-dashed rounded-lg">
-          {response?.downloads ? <AudioPlayer /> : <Upload_input />}
+          {response?.downloads ? <AudioPlayer /> : <UploadInput />}
         </div>
       </div>
     </div>

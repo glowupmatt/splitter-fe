@@ -9,7 +9,7 @@ type Props = {
   onHover: boolean;
 };
 
-const Submit_form = ({
+const SubmitForm = ({
   onFileSelect,
   setDragActive,
   setOnHover,
@@ -69,4 +69,4 @@ const Submit_form = ({
   );
 };
 
-export default Submit_form;
+export default SubmitForm;

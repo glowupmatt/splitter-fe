@@ -2,12 +2,12 @@
 
 import React, { useState, useRef } from "react";
 import upload_file from "@/fetchFunc/upload_functions";
-import Submit_form from "./Submit_form";
-import Spinner_component from "./Spinner_component";
+import Submit_form from "./SubmitForm";
+import SpinnerComponent from "./SpinnerComponent";
 import { useAudioControls } from "@/context/AudioControlsContext";
 import { Button } from "../ui/button";
 
-const Upload_input = () => {
+const UploadInput = () => {
   const { setResponse } = useAudioControls();
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -55,7 +55,7 @@ const Upload_input = () => {
             >
               {isLoading ? (
                 <div className="w-full flex justify-center items-center flex-col gap-2 text-white">
-                  <Spinner_component />
+                  <SpinnerComponent />
                   <p>Processing Audio</p>
                 </div>
               ) : (
@@ -89,4 +89,4 @@ const Upload_input = () => {
   );
 };
 
-export default Upload_input;
+export default UploadInput;

@@ -6,7 +6,7 @@ type Props = {
   description: string;
 };
 
-const Information_card = ({ icon, title, description }: Props) => {
+const InformationCard = ({ icon, title, description }: Props) => {
   return (
     <Card className="w-full h-[270px] bg-white/20 rounded-2xl shadow-lg backdrop-blur-sm border border-white/30 text-white/60">
       <CardHeader>
@@ -22,4 +22,4 @@ const Information_card = ({ icon, title, description }: Props) => {
   );
 };
 
-export default Information_card;
+export default InformationCard;
