@@ -1,39 +1,29 @@
-async function uploadFile(file: File, mode: 2 | 4) {
+async function uploadFile(link: string, mode: 2 | 4) {
   try {
-    if (!file) {
-      throw new Error("No file uploaded");
+    if (!link) {
+      throw new Error("No link uploaded");
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("link", link);
     formData.append("mode", mode.toString());
 
-    console.log("Uploading file:", file);
+    console.log("Uploading link:", link);
 
-    // Send the file to S3 first then to the function
-
-    const s3Url = await fetch("/api/uploadToS3", {
+    const response = await fetch("/api/split_stems", {
       method: "POST",
       body: formData,
     });
 
-    console.log("S3 URL:", await s3Url.json());
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
 
-    // const response = await fetch("/api/split_stems", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-
-    // if (!response.ok) {
-    //   throw new Error(`Upload failed: ${response.statusText}`);
-    // }
-
-    // const data = await response.json();
-    // console.log("Response from server:", data);
-    // return data;
-    return s3Url;
+    const data = await response.json();
+    console.log("Response from server:", data);
+    return data;
   } catch (error) {
-    console.error("Error in uploadFile:", error);
+    console.error("Error in uploadlink:", error);
     throw error;
   }
 }
