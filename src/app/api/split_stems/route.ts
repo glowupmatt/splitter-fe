@@ -8,26 +8,30 @@ export async function POST(request: Request) {
 
     // Parse the FormData from the request
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const link = formData.get("link");
     const mode = formData.get("mode");
 
-    // Log the file details
-    if (!file) {
-      return new Response("No file uploaded", { status: 400 });
+    // Log the link details
+    if (!link) {
+      return new Response("No link uploaded", { status: 400 });
     }
     if (!mode) {
       return new Response("No mode provided", { status: 400 });
     }
 
-    const res = await fetch(process.env.END_POINT_URL!, {
-      method: "POST",
-      body: formData,
-    });
+    const res = JSON.stringify({ link });
 
-    const data = await res.json();
-    console.log("Response from server:", data);
-    return new NextResponse(JSON.stringify(data), {
-      status: res.status,
+    console.log("Uploading link:", link);
+    console.log("Mode:", mode);
+    // const res = await fetch(process.env.END_POINT_URL!, {
+    //   method: "POST",
+    //   body: formData,
+    // });
+
+    // const data = await res.json();
+    // console.log("Response from server:", data);
+    return new NextResponse(JSON.stringify(res), {
+      // status: res.status,
       headers: {
         "Content-Type": "application/json",
       },
