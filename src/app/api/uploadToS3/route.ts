@@ -1,7 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { NextResponse } from "next/server";
-import { Blob } from "node:buffer";
 
 // Create S3 client
 const s3Client = new S3Client({

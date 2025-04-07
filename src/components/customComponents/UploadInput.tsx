@@ -35,7 +35,8 @@ const UploadInput = () => {
     try {
       if (selectedFile) {
         const data = await uploadFile(selectedFile, mode);
-        setResponse(data);
+        // setResponse(data);
+        console.log("Response data:", data);
       }
     } catch (error) {
       console.error("Error clearing input value:", error);
