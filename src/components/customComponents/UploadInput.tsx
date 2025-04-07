@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import uploadFile from "@/fetchFunc/upload_functions";
+import uploadFile from "@/fetchFunc/uploadFunctions";
 import SubmitForm from "./SubmitForm";
 import SpinnerComponent from "./SpinnerComponent";
 import { useAudioControls } from "@/context/AudioControlsContext";
