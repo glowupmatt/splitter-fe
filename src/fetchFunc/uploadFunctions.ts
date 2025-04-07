@@ -23,7 +23,7 @@ async function uploadFile(link: string, mode: 2 | 4) {
     console.log("Response from server:", data);
     return data;
   } catch (error) {
-    console.error("Error in uploadFile:", error);
+    console.error("Error in uploadlink:", error);
     throw error;
   }
 }

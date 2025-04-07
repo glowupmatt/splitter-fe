@@ -19,19 +19,17 @@ export async function POST(request: Request) {
       return new Response("No mode provided", { status: 400 });
     }
 
-    const res = JSON.stringify({ link });
-
     console.log("Uploading link:", link);
     console.log("Mode:", mode);
-    // const res = await fetch(process.env.END_POINT_URL!, {
-    //   method: "POST",
-    //   body: formData,
-    // });
+    const res = await fetch(process.env.END_POINT_URL!, {
+      method: "POST",
+      body: formData,
+    });
 
-    // const data = await res.json();
-    // console.log("Response from server:", data);
-    return new NextResponse(JSON.stringify(res), {
-      // status: res.status,
+    const data = await res.json();
+    console.log("Response from server:", data);
+    return new NextResponse(JSON.stringify(data), {
+      status: res.status,
       headers: {
         "Content-Type": "application/json",
       },

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -7,6 +8,8 @@ import SpinnerComponent from "./SpinnerComponent";
 import { useAudioControls } from "@/context/AudioControlsContext";
 import { Button } from "../ui/button";
 import { Switch } from "../ui/switch";
+import { upload } from "@vercel/blob/client";
+import { PutBlobResult } from "@vercel/blob";
 
 const UploadInput = () => {
   const { setResponse } = useAudioControls();
@@ -17,13 +20,17 @@ const UploadInput = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [buttonHovered, setButtonHovered] = useState<boolean>(false);
 
+  const timeoutPromise = (ms: number) =>
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Upload timed out")), ms)
+    );
+
   const onFileSelect = (file: File) => {
     setSelectedFile(file);
   };
 
   const handleModeChange = () => {
     setMode((prevMode) => (prevMode === 2 ? 4 : 2));
-    console.log(`Mode changed to ${mode === 2 ? "4" : "2"} stems`);
     setResponse(null);
   };
 
@@ -34,9 +41,19 @@ const UploadInput = () => {
     setIsLoading(true);
     try {
       if (selectedFile) {
-        const data = await uploadFile(selectedFile, mode);
-        // setResponse(data);
-        console.log("Response data:", data);
+        const newBlob = (await Promise.race([
+          upload(selectedFile.name, selectedFile, {
+            access: "public",
+            handleUploadUrl: "/api/upload",
+          }),
+          timeoutPromise(300000),
+        ])) as PutBlobResult;
+
+        const url = newBlob.url;
+
+        const splitTrack = await uploadFile(url, mode);
+        console.log("Split track response:", splitTrack);
+        setResponse(splitTrack);
       }
     } catch (error) {
       console.error("Error clearing input value:", error);
