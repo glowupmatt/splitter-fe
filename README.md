@@ -1,37 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Splitter Front End
+
+This is the front end used to split stems. Users can drag and drop MP3 or WAV files, which are then processed by a serverless function to split the song into 2 or 4 stems.
+
+## Features
+
+- **Drag and Drop**: Easily upload your audio files by dragging and dropping them into the interface.
+- **Serverless Processing**: The uploaded files are processed by a serverless function to split the song into stems.
+- **Shadcn**: Utilizes Shadcn for UI components.
+- **Vercel Blob Storage**: Stores the audio files from the frontend using Vercel's Blob storage.
+- **Wavesurfer.js**: Visualizes the audio waveform using Wavesurfer.js.
+- **Tailwind CSS**: Styled with Tailwind CSS for a modern and responsive design.
+
+## Technologies Used
+
+- **Shadcn**: UI components library for a consistent user interface.
+- **Vercel Blob Storage**: Efficient and scalable storage solution for audio files.
+- **Wavesurfer.js**: Library for creating customizable audio waveforms.
+- **Tailwind CSS**: Utility-first CSS framework for styling.
 
 ## Getting Started
 
-First, run the development server:
+To get started with the project, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the Repository**:
+    ```sh
+    git clone https://github.com/glowupmatt/splitter-fe.git
+    cd splitter-fe
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install Dependencies**:
+    ```sh
+    npm install
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run the Development Server**:
+    ```sh
+    npm run dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Build the Project**:
+    ```sh
+    npm run build
+    ```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# splitter-fe
+5. **Start the Production Server**:
+    ```sh
+    npm start
+    ```
