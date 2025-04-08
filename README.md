@@ -3,7 +3,7 @@
 This is the front end used to split stems. Users can drag and drop MP3 or WAV files, which are then processed by a serverless function to split the song into 2 or 4 stems.
 
 Back End Code:
- - [https://github.com/glowupmatt/splitter-fe](https://github.com/glowupmatt/stem-splitter-back-end)
+ - https://github.com/glowupmatt/stem-splitter-back-end
 
 ## Features
 
