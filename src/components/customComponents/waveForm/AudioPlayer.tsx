@@ -10,7 +10,9 @@ export const AudioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isMuted, setIsMuted] = useState<{ [key: string]: boolean }>({});
+  const [tracksReady, setTracksReady] = useState(false);
   const wavesurfersRef = useRef<{ [key: string]: WaveSurfer }>({});
+  const readyTracksRef = useRef<Set<string>>(new Set());
 
   const removeAudio = () => {
     setResponse(null);
@@ -32,6 +34,8 @@ export const AudioPlayer = () => {
   };
 
   const handlePlayPause = () => {
+    if (!tracksReady) return;
+
     Object.values(wavesurfersRef.current).forEach((wave) => {
       if (isPlaying) {
         wave.pause();
@@ -54,8 +58,11 @@ export const AudioPlayer = () => {
   useEffect(() => {
     if (!response?.downloads) return;
 
+    setTracksReady(false);
+    readyTracksRef.current.clear();
     const newWavesurfers: { [key: string]: WaveSurfer } = {};
     const controllers: AbortController[] = [];
+    const trackCount = Object.keys(response.downloads).length;
 
     // Initialize wavesurfer instances for each track
     Object.entries(response.downloads).forEach(([key, url], index) => {
@@ -73,7 +80,7 @@ export const AudioPlayer = () => {
         cursorWidth: 1,
         interact: true,
         fetchParams: {
-          signal: controller.signal, // Passing the abort signal here
+          signal: controller.signal,
         },
       });
 
@@ -88,6 +95,17 @@ export const AudioPlayer = () => {
 
       wavesurfer.on("error", (error) => {
         console.error(`Error in wavesurfer for track ${key}:`, error);
+      });
+
+      // Add ready event handler to track when each wavesurfer instance is ready
+      wavesurfer.on("ready", () => {
+        readyTracksRef.current.add(key);
+
+        // When all tracks are ready, enable playback
+        if (readyTracksRef.current.size === trackCount) {
+          setTracksReady(true);
+          console.log("All tracks are loaded and ready for playback");
+        }
       });
 
       try {
@@ -146,6 +164,7 @@ export const AudioPlayer = () => {
             currentTime={currentTime}
             handlePlayPause={handlePlayPause}
             removeAudio={removeAudio}
+            isDisabled={!tracksReady}
           />
         </>
       )}

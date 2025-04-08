@@ -5,10 +5,12 @@ type Props = {
   currentTime: number;
   handlePlayPause: () => void;
   removeAudio: () => void;
+  isDisabled?: boolean;
 };
 
 const Controls = (props: Props) => {
-  const { isPlaying, currentTime, handlePlayPause, removeAudio } = props;
+  const { isPlaying, currentTime, handlePlayPause, removeAudio, isDisabled } =
+    props;
   return (
     <>
       <div className="text-white font-medium">
@@ -17,6 +19,7 @@ const Controls = (props: Props) => {
       <div className="mt-4 flex flex-row items-start gap-2">
         <button
           onClick={handlePlayPause}
+          disabled={isDisabled}
           className="px-6 py-3 bg-[#4F4A85] text-white rounded-md hover:bg-[#383351] transition-colors w-full cursor-pointer"
         >
           {isPlaying ? "Pause" : "Play"}
