@@ -2,154 +2,139 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useAudioControls } from "@/context/AudioControlsContext";
-import WaveSurfer from "wavesurfer.js";
+import Multitrack from "wavesurfer-multitrack";
 import Controls from "./aduioComponents/Controls";
 
 export const AudioPlayer = () => {
-  const { response, containerRefs, setResponse } = useAudioControls();
+  const { response, setResponse } = useAudioControls();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isMuted, setIsMuted] = useState<{ [key: string]: boolean }>({});
   const [tracksReady, setTracksReady] = useState(false);
-  const wavesurfersRef = useRef<{ [key: string]: WaveSurfer }>({});
-  const readyTracksRef = useRef<Set<string>>(new Set());
+  const multitrackRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isMuted, setIsMuted] = useState<{ [key: string]: boolean }>({});
 
   const removeAudio = () => {
     setResponse(null);
     setIsPlaying(false);
     setCurrentTime(0);
     setIsMuted({});
-  };
-
-  const handleSeek = (position: number) => {
-    const waves = Object.values(wavesurfersRef.current);
-    if (waves.length === 0) return;
-
-    waves.forEach((wave) => {
-      if (wave) {
-        wave.seekTo(position);
-      }
-    });
-    setCurrentTime(position);
-  };
-
-  const handlePlayPause = () => {
-    if (!tracksReady) return;
-
-    Object.values(wavesurfersRef.current).forEach((wave) => {
-      if (isPlaying) {
-        wave.pause();
-      } else {
-        wave.play();
-      }
-    });
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleMute = (key: string) => {
-    const wave = wavesurfersRef.current[key];
-    if (wave) {
-      const newMutedState = !isMuted[key];
-      wave.setMuted(newMutedState);
-      setIsMuted((prev) => ({ ...prev, [key]: newMutedState }));
+    if (multitrackRef.current) {
+      multitrackRef.current.destroy();
+      multitrackRef.current = null;
     }
   };
 
-  useEffect(() => {
-    if (!response?.downloads) return;
+  const handlePlayPause = () => {
+    if (!tracksReady || !multitrackRef.current) return;
 
-    setTracksReady(false);
-    readyTracksRef.current.clear();
-    const newWavesurfers: { [key: string]: WaveSurfer } = {};
-    const controllers: AbortController[] = [];
-    const trackCount = Object.keys(response.downloads).length;
+    if (isPlaying) {
+      multitrackRef.current.pause();
+    } else {
+      multitrackRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
-    // Initialize wavesurfer instances for each track
-    Object.entries(response.downloads).forEach(([key, url], index) => {
-      const container = containerRefs.current[index];
-      if (!container) return;
+  const handleMute = (id: string) => {
+    if (!multitrackRef.current) return;
 
-      const controller = new AbortController();
-      controllers.push(controller);
-
-      const wavesurfer = WaveSurfer.create({
-        container: container,
-        waveColor: "#4F4A85",
-        progressColor: "#383351",
-        height: 100,
-        cursorWidth: 1,
-        interact: true,
-        fetchParams: {
-          signal: controller.signal,
-        },
-      });
-
-      wavesurfer.on("click", () => {
-        const position = wavesurfer.getCurrentTime() / wavesurfer.getDuration();
-        handleSeek(position);
-      });
-
-      wavesurfer.on("audioprocess", (time: number) => {
-        setCurrentTime(time);
-      });
-
-      wavesurfer.on("error", (error) => {
-        console.error(`Error in wavesurfer for track ${key}:`, error);
-      });
-
-      // Add ready event handler to track when each wavesurfer instance is ready
-      wavesurfer.on("ready", () => {
-        readyTracksRef.current.add(key);
-
-        // When all tracks are ready, enable playback
-        if (readyTracksRef.current.size === trackCount) {
-          setTracksReady(true);
-          console.log("All tracks are loaded and ready for playback");
-        }
-      });
-
-      try {
-        // Load the audio with proper error handling
-        wavesurfer.load(url);
-
-        newWavesurfers[key] = wavesurfer;
-        setIsMuted((prev) => ({ ...prev, [key]: false }));
-      } catch (error) {
-        console.error(`Error loading track ${key}:`, error);
+    const newMutedState = !isMuted[id];
+    // Find the track in multitrack and set its volume to 0 if muted
+    multitrackRef.current.tracks.forEach((track) => {
+      if (track.id.toString() === id) {
+        track.setVolume(newMutedState ? 0 : 1);
       }
     });
 
-    wavesurfersRef.current = newWavesurfers;
+    setIsMuted((prev) => ({ ...prev, [id]: newMutedState }));
+  };
 
+  useEffect(() => {
+    if (!response?.downloads || !containerRef.current) return;
+
+    setTracksReady(false);
+
+    // Clean up previous instance if it exists
+    if (multitrackRef.current) {
+      multitrackRef.current.destroy();
+    }
+
+    // Prepare tracks configuration for multitrack
+    const tracks = Object.entries(response.downloads).map(
+      ([key, url], index) => ({
+        id: key,
+        url: url,
+        draggable: false, // Set to true if you want tracks to be draggable
+        startPosition: 0,
+        volume: 1,
+        options: {
+          waveColor: "#4F4A85",
+          progressColor: "#383351",
+        },
+      })
+    );
+
+    // Create multitrack instance
+    const multitrack = Multitrack.create(tracks, {
+      container: containerRef.current,
+      minPxPerSec: 50, // Initial zoom level
+      cursorWidth: 1,
+      cursorColor: "#D72F21",
+      trackBackground: "#1F1F1F",
+      trackBorderColor: "#333333",
+    });
+
+    // Event listeners
+    multitrack.on("timeupdate", (time) => {
+      setCurrentTime(time);
+    });
+
+    multitrack.on("volume-change", ({ id, volume }) => {
+      console.log(`Track ${id} volume updated to ${volume}`);
+    });
+
+    multitrack.once("canplay", () => {
+      console.log("All tracks loaded and ready for playback");
+      setTracksReady(true);
+    });
+
+    // Store the multitrack instance in ref
+    multitrackRef.current = multitrack;
+
+    // Initialize muted state for each track
+    const initialMutedState = Object.keys(response.downloads).reduce(
+      (acc, key) => {
+        acc[key] = false;
+        return acc;
+      },
+      {}
+    );
+    setIsMuted(initialMutedState);
+
+    // Cleanup function
     return () => {
-      Object.values(newWavesurfers).forEach((wave) => {
-        if (wave) {
-          try {
-            wave.destroy();
-          } catch (e) {
-            console.error("Error destroying wavesurfer:", e);
-          }
-        }
-      });
+      if (multitrackRef.current) {
+        multitrackRef.current.destroy();
+      }
     };
-  }, [response?.downloads, containerRefs]);
+  }, [response?.downloads]);
 
   return (
     <div className="w-full flex flex-col gap-4">
       {response?.downloads && (
         <>
-          {Object.entries(response.downloads).map(([key], index) => (
-            <div
-              key={key}
-              className="flex flex-row items-center gap-4 justify-between"
-            >
-              <div
-                ref={(el) => {
-                  containerRefs.current[index] = el;
-                }}
-                className="flex-1 max-w-[54rem] h-[100px] bg-gray-900 rounded-lg cursor-pointer"
-              />
+          {/* Main container for the multitrack visualization */}
+          <div
+            ref={containerRef}
+            className="bg-gray-900 rounded-lg w-full h-[400px]"
+          />
+
+          {/* Mute buttons for each track */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {Object.keys(response.downloads).map((key) => (
               <button
+                key={key}
                 onClick={() => handleMute(key)}
                 className={`px-4 py-2 rounded-md cursor-pointer ${
                   isMuted[key] ? "bg-red-500" : "bg-[#4F4A85]"
@@ -157,8 +142,9 @@ export const AudioPlayer = () => {
               >
                 {isMuted[key] ? "Unmute" : "Mute"} {key}
               </button>
-            </div>
-          ))}
+            ))}
+          </div>
+
           <Controls
             isPlaying={isPlaying}
             currentTime={currentTime}
