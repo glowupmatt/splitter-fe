@@ -114,7 +114,7 @@ export const AudioPlayer = () => {
       </div>
       {response?.downloads && (
         <>
-          <div className="flex flex-col items-center md:flex-row gap-2 w-full">
+          <div className="flex items-center md:flex-row gap-2 w-full">
             <div className="flex flex-col justify-center items-center gap-[6.8rem]">
               {Object.keys(response.downloads).map((key, index) => (
                 <div key={index} className="flex items-center gap-2">
@@ -141,21 +141,24 @@ export const AudioPlayer = () => {
                         });
                       }
                     }}
-                    className="accent-[#4F4A85]"
+                    className="accent-[#4F4A85] hidden md:block"
                   />
-                  <button
-                    onClick={() => handleMute(index)}
-                    className={`px-2 py-1 rounded-md cursor-pointer ${
-                      isMuted[index]?.vol === 0 ? "bg-red-500" : "bg-[#4F4A85]"
-                    } text-white min-w-[80px]`}
-                  >
-                    {isMuted[index]?.vol === 0 ? "Unmute" : "Mute"}
-                  </button>
                 </div>
               ))}
             </div>
             <div className="overflow-hidden">
               <div ref={containerRef} className="w-[17rem] md:w-full"></div>
+            </div>
+            <div className="flex flex-col justify-center items-center gap-[4.8rem]">
+              {Object.keys(response.downloads).map((key, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleMute(index)}
+                  className="px-4 py-2 rounded-md cursor-pointer bg-[#4F4A85] text-white"
+                >
+                  {isMuted[index]?.vol > 0 ? "Mute" : "Unmute"} {key}
+                </button>
+              ))}
             </div>
           </div>
         </>
