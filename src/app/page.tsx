@@ -13,7 +13,7 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-blue-950">
-      <div className="flex flex-col gap-8 p-4 max-w-[80rem]">
+      <div className="flex flex-col gap-8 p-4 w-full max-w-[80rem]">
         <DescriptionInfo
           title={description_data.title}
           description={description_data.description}

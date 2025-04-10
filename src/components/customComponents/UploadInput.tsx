@@ -52,7 +52,6 @@ const UploadInput = () => {
         const url = newBlob.url;
 
         const splitTrack = await uploadFile(url, mode);
-        console.log("Split track response:", splitTrack);
         setResponse(splitTrack);
       }
     } catch (error) {

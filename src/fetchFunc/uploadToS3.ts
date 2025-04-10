@@ -39,17 +39,12 @@ export async function uploadToS3(
         Body: fileBuffer,
         ContentType:
           file instanceof File ? file.type : "application/octet-stream",
-        // Optional: make the file public
         ACL: "public-read",
       },
     });
 
-    // Perform the upload
-    const result = await upload.done();
+    await upload.done();
 
-    console.log("Upload successful:", result);
-
-    // Return the URL of the uploaded file
     return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/originals/${key}`;
   } catch (error) {
     console.error("Error uploading to S3:", error);

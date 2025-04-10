@@ -17,7 +17,6 @@ export const WaveFormContainer = forwardRef<
   const wavesurferRef = useRef<WaveSurfer | null>(null);
 
   useEffect(() => {
-    console.log("ref", ref);
     if (!ref || typeof ref === "function") return;
 
     const wavesurfer = WaveSurfer.create({
@@ -29,8 +28,6 @@ export const WaveFormContainer = forwardRef<
       interact: true,
       normalize: true,
     });
-
-    console.log("audioUrl", audioUrl);
 
     if (audioUrl) {
       wavesurfer.load(audioUrl);

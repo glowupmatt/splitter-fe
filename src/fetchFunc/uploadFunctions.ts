@@ -8,8 +8,6 @@ async function uploadFile(link: string, mode: 2 | 4) {
     formData.append("link", link);
     formData.append("mode", mode.toString());
 
-    console.log("Uploading link:", link);
-
     const response = await fetch("/api/split_stems", {
       method: "POST",
       body: formData,
@@ -20,7 +18,6 @@ async function uploadFile(link: string, mode: 2 | 4) {
     }
 
     const data = await response.json();
-    console.log("Response from server:", data);
     return data;
   } catch (error) {
     console.error("Error in uploadlink:", error);

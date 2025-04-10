@@ -40,8 +40,7 @@ export default function AvatarUploadPage() {
 
             const url = newBlob.url;
 
-            const splitTrack = await uploadFile(url, 2);
-            console.log("Split track response:", splitTrack);
+            await uploadFile(url, 2);
             setBlob(newBlob);
           } catch (e) {
             console.error("Error uploading file:", e);
