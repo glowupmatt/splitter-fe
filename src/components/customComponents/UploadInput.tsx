@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -115,7 +114,7 @@ const UploadInput = () => {
           buttonHovered ? "bg-blue-500" : "bg-blue-600"
         }`}
       >
-        Split Track
+        {isLoading ? "Processing..." : "Upload and Split"}
       </Button>
     </form>
   );
